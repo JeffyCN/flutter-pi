@@ -4,3 +4,4 @@ build.sh
 compile_commands.json
 .clang-format
 build
+binary

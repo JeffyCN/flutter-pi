@@ -1,6 +1,7 @@
 CC = cc
 LD = cc
-REAL_CFLAGS = -I./include $(shell pkg-config --cflags gbm libdrm glesv2 egl) -DBUILD_TEXT_INPUT_PLUGIN -ggdb $(CFLAGS)
+PKG_CONFIG = pkg-config
+REAL_CFLAGS = -I./include $(shell ${PKG_CONFIG} --cflags gbm libdrm glesv2 egl) -DBUILD_TEXT_INPUT_PLUGIN -ggdb $(CFLAGS)
 REAL_LDFLAGS = $(shell pkg-config --libs gbm libdrm glesv2 egl) -lrt -lflutter_engine -lpthread -ldl $(LDFLAGS)
 
 SOURCES = src/flutter-pi.c src/platformchannel.c src/pluginregistry.c src/console_keyboard.c \
