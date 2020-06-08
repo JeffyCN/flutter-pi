@@ -956,7 +956,8 @@ bool init_display(void) {
 	printf("Finding DRM encoder...\n");
 	for (i = 0; i < resources->count_encoders; i++) {
 		encoder = drmModeGetEncoder(drm.fd, resources->encoders[i]);
-		if (encoder->encoder_id == connector->encoder_id)
+		if (!connector->encoder_id ||
+		    encoder->encoder_id == connector->encoder_id)
 			break;
 		drmModeFreeEncoder(encoder);
 		encoder = NULL;
