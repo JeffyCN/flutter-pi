@@ -233,6 +233,7 @@ struct drm_fb *drm_fb_get_from_bo(struct gbm_bo *bo) {
 	height = gbm_bo_get_height(bo);
 	format = gbm_bo_get_format(bo);
 
+#if 0 // MALI doesn't support planes and modifiers.
 	uint64_t modifiers[4] = {0};
 	modifiers[0] = gbm_bo_get_modifier(bo);
 	const int num_planes = gbm_bo_get_plane_count(bo);
@@ -249,6 +250,7 @@ struct drm_fb *drm_fb_get_from_bo(struct gbm_bo *bo) {
 	}
 
 	ok = drmModeAddFB2WithModifiers(drm.fd, width, height, format, handles, strides, offsets, modifiers, &fb->fb_id, flags);
+#endif
 
 	if (ok) {
 		if (flags)
@@ -987,9 +989,12 @@ bool init_display(void) {
 	gbm.device = gbm_create_device(drm.fd);
 	gbm.format = DRM_FORMAT_XRGB8888;
 	gbm.surface = NULL;
+
+#if 0 // MALI doesn't support modifiers.
 	gbm.modifier = DRM_FORMAT_MOD_LINEAR;
 
 	gbm.surface = gbm_surface_create_with_modifiers(gbm.device, width, height, gbm.format, &gbm.modifier, 1);
+#endif
 
 	if (!gbm.surface) {
 		if (gbm.modifier != DRM_FORMAT_MOD_LINEAR) {
