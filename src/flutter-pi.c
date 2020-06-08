@@ -1397,6 +1397,22 @@ void  init_io(void) {
 			}
 		}
 
+		// check if the device emits ABS_MT_POSITION_X and
+		// ABS_MT_POSITION_Y events, and if yes
+		// query some calibration data.
+		if (ISSET(absbits, ABS_MT_POSITION_X) &&
+		    ISSET(absbits, ABS_MT_POSITION_Y)) {
+			ok = ioctl(dev.fd, EVIOCGABS(ABS_MT_POSITION_X),
+				   &dev.xinfo);
+			if (ok != -1) ok = ioctl(dev.fd,
+						 EVIOCGABS(ABS_MT_POSITION_Y),
+						 &(dev.yinfo));
+			if (ok == -1) {
+				perror("    could not query input_absinfo: ioctl for ECIOCGABS(ABS_MT_POSITION_X) or EVIOCGABS(ABS_MT_POSITION_Y) failed");
+				goto close_continue;
+			}
+		}
+
 		// check if the device is multitouch (so a multitouch touchscreen or touchpad)
 		if (ISSET(absbits, ABS_MT_SLOT)) {
 			struct input_absinfo slotinfo;
